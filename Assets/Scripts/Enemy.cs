@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     private GameObject healthBarInstance;
     private EnemyHealthBar healthBarScript;
 
-    public Transform healthBarPosition; // un hijo vacío para posicionar la barra
+    public Transform healthBarPosition; 
 
     void Start()
     {
