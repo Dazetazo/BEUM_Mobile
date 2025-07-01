@@ -23,8 +23,3 @@ public struct ChunkGenerationData
     public WaveConfig[] wavesInChunk;
     public float timeBeforeFirstWave;
 }
-
-
-// Note: Struct definitions should not be inside a class or namespace
-// unless you specifically want them to be nested.
-// They are correctly defined at the top level here.

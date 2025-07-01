@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic; // Required for List
 
 public class LevelGenerator : MonoBehaviour // Corrected class definition
-{
+{ 
     [SerializeField]
     private GameObject[] levelChunkPrefabs; // Array of level chunk prefabs
     [SerializeField]
@@ -118,5 +118,4 @@ public class LevelGenerator : MonoBehaviour // Corrected class definition
             }
         }
     }
-
 }

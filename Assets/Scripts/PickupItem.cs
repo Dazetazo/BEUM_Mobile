@@ -3,9 +3,17 @@ using UnityEngine;
 
 public class PickupItem : MonoBehaviour
 {
+    [System.Serializable] // Enums can be serialized in the Inspector
+    public enum PickupType
+    {
+        Health,
+        Weapon,
+        Score
+        // Add other item types here
+    }
     [SerializeField]
- private PickupType itemType; // Choose the type of this item in the Inspector
- [SerializeField]
+    private PickupType itemType; // Choose the type of this item in the Inspector
+    [SerializeField]
     private GameObject weaponPrefab; // Assign the weapon prefab here if itemType is Weapon
     [SerializeField]
     private int value; // Value associated with the item (e.g., healing amount, score amount, weapon ID)
@@ -29,13 +37,4 @@ public class PickupItem : MonoBehaviour
             }
         }
     }
-}
-
-[System.Serializable] // Enums can be serialized in the Inspector
-public enum PickupType
-{
-    Health,
-    Weapon,
-    Score
-    // Add other item types here
 }

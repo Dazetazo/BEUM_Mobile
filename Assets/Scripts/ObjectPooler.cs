@@ -1,14 +1,13 @@
 csharp
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 
 public class ObjectPooler : MonoBehaviour
 {
     public static ObjectPooler Instance; // Static instance for easy access
 
     [SerializeField]
-    private GameObject prefabToPool; // The prefab to pool
+ private GameObject prefabToPool; // The prefab to pool
     [SerializeField]
  private int initialPoolSize = 10; // The initial size of the pool
 
@@ -45,17 +44,13 @@ public class ObjectPooler : MonoBehaviour
         }
 
         // If no inactive object is found, optionally grow the pool (be cautious with performance)
-        Debug.LogWarning("Pool is empty. Expanding pool for: " + prefabToPool.name);
+ Debug.LogWarning("Pool is empty. Expanding pool for: " + prefabToPool.name);
  GameObject newObj = Instantiate(prefabToPool);
  newObj.SetActive(true); // Activate the new object immediately
  pooledObjects.Add(newObj); // Add it to the pool
  newObj.transform.position = position;
  newObj.transform.rotation = rotation;
  return newObj;
-        // Potential: newObj.GetComponent<IPooledObject>()?.OnObjectSpawn();
-        // Debug.LogWarning("Object pool is depleted. Consider increasing the pool size.");
-        // return newObj;
-
         // Or return null if the pool is depleted and cannot grow
         Debug.LogWarning("Object pool is depleted. Returning null.");
         return null;
