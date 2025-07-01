@@ -1,15 +1,14 @@
 csharp
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
-{
+public class Enemy : MonoBehaviour {
     [SerializeField]
-    private int maxHealth = 5; // Maximum health of the enemy
+    private int maxHealth = 5; // Maximum health of the enemy 
     private int currentHealth; // Current health of the enemy
 
     // Cache the spawner and level manager to avoid repeated FindObjectOfType calls
     private EnemySpawner enemySpawner;
-    private LevelManager levelManager;
+    private LevelManager levelManager; 
 
     void Awake()
     {
@@ -33,13 +32,13 @@ public class Enemy : MonoBehaviour
     // Method called when the enemy is defeated
     private void Die()
     {
-        Debug.Log(gameObject.name + " was defeated.");
+        Debug.Log(gameObject.name + " was defeated. Returning to pool.");
 
         // Notify the EnemySpawner that this enemy has been defeated using the cached reference
         if (enemySpawner != null)
         {
             enemySpawner.OnEnemyDefeatedInChunk();
-        }
+        } 
 
         // Add score via the LevelManager using the cached reference
         if (levelManager != null)
@@ -48,15 +47,15 @@ public class Enemy : MonoBehaviour
         }
 
         // Implement enemy defeat logic here
-        // Disable renderer and colliders temporarily if needed for death animation
+        // Disable renderer and colliders temporarily if needed for death animation 
 
         ResetState(); // Reset state before returning to the pool
 
         ObjectPooler.Instance.ReturnToPool(gameObject); // Return the enemy to the pool
     }
-
+    
     // Method to reset the enemy's state for reuse
-    public void ResetState()
+    public void ResetState() 
     {
         currentHealth = maxHealth; // Reset health
         // Reset other relevant states here, e.g.:

@@ -1,8 +1,6 @@
 csharp
 using UnityEngine;
 
-public class AreaTrigger : MonoBehaviour
-{
     [SerializeField]
     private int areaIndex; // The index of the area this trigger corresponds to
 

@@ -5,29 +5,17 @@ using TMPro; // Required for TextMeshPro
 public class LevelManager : MonoBehaviour // Changed class name to LevelManager (if it was GameManager)
 {
     [SerializeField]
-    private EnemySpawner enemySpawner; // Assign the EnemySpawner in the Inspector
+    // Removed reference to EnemySpawner as it's not directly used for score
 
-    // Score Variables
+    // Scoring System Variables
     private int score = 0; // Player's current score
     [SerializeField]
     private TextMeshProUGUI scoreText; // Assign a TextMeshProUGUI element in the Inspector for the score display
-    {
-        if (enemySpawner == null)
-        {
-            Debug.LogError("Enemy Spawner not assigned to Level Manager!");
-            return;
-        }
 
+    void Start()
+    {
         // Initialize score and update UI
         UpdateScoreUI();
-
-        // The first area's waves will be triggered by the first AreaTrigger
-    }    
-    void OnDestroy()
-    {
-        // Unsubscribe from the event to prevent memory leaks when the Level Manager is destroyed
-        // The EnemySpawner no longer has OnAreaCleared event in this endless runner version
-        // If a new event like OnChunkWavesCompleted is added and LevelManager subscribes, unsubscribe here.
     }
 
     // New method to add score
@@ -35,7 +23,7 @@ public class LevelManager : MonoBehaviour // Changed class name to LevelManager 
     {
         score += amount;
         UpdateScoreUI();
-        Debug.Log("Score: " + score);
+        Debug.Log("Score added: +" + amount + ". Total Score: " + score);
     }
 
     // Update the score UI text

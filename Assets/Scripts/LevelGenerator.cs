@@ -1,7 +1,8 @@
 csharp
 using UnityEngine;
+using System.Collections.Generic; // Required for List
 
-public class LevelGenerator : MonoBehaviour
+public class LevelGenerator : MonoBehaviour // Corrected class definition
 {
     [SerializeField]
     private GameObject[] levelChunkPrefabs; // Array of level chunk prefabs
@@ -17,7 +18,7 @@ public class LevelGenerator : MonoBehaviour
     private float destroyChunkDistance = 10f; // Distance behind the player at which to destroy old chunks
 
     private Vector3 lastChunkEndPosition;
-    private System.Collections.Generic.List<GameObject> activeChunks = new System.Collections.Generic.List<GameObject>(); // List to keep track of active chunks
+    private List<GameObject> activeChunks = new List<GameObject>(); // List to keep track of active chunks
 
     void Start()
     {
@@ -118,12 +119,4 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    // Optional: Add a method to clean up chunks that are far behind the player
-    /*
-    private void CleanupOldChunks()
-    {
-        // Find chunks that are far behind the player and destroy them
-        // Requires keeping track of instantiated chunks (e.g., in a List)
-    }
-    */
 }

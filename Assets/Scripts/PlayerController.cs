@@ -4,16 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
  {
- [Header("Movement")]
- [SerializeField] private float moveSpeed = 5f;
- private Vector2 moveInput;
- private Rigidbody2D rb; // Using Rigidbody2D for 2D movement
- private Animator animator;
- private bool isDefeated = false; // Added for defeat state
-
  [Header("Health")]
  [SerializeField] private int maxHealth = 100; // Maximum health of the player
  private int currentHealth;
+ [SerializeField] private Image healthBarFillImage; // Assign the fill image of the health bar in the Inspector
 
  [Header("Attack")]
     [Header("Movement")]
@@ -29,6 +23,17 @@ public class PlayerController : MonoBehaviour
  [SerializeField] private float comboWindow = 0.5f; // Time within which the next attack can continue the combo
  [SerializeField] private int maxCombo = 3; // Maximum number of attacks in a combo sequence (e.g., 3-hit combo)
     [Header("Input")]
+    [SerializeField]
+    private float moveSpeed = 5f;
+    [SerializeField]
+    private float attackRange = 1f; // Distancia de ataque
+    [SerializeField]
+    private int attackDamage = 20; // Damage dealt by the player
+    [SerializeField]
+    private LayerMask enemyLayer; // Capa para detectar enemigos
+
+    [SerializeField] private TextMeshProUGUI comboText;
+
     private InputAction moveAction;
 
     private void Awake()
@@ -40,6 +45,7 @@ public class PlayerController : MonoBehaviour
  // Combo System Initialization
  comboCount = 0;
  lastAttackTime = -comboWindow; // Initialize to allow combo on first attack
+        UpdateComboUI();
 
 
         // Assuming you are using the new Input System
@@ -68,46 +74,12 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Update()
-    {
- if (isDefeated) return; // Don't process input or updates if defeated
+ {
+ if (isDefeated) return;
 
         // Check if the combo window has expired
         if (Time.time >= lastAttackTime + comboWindow && comboCount > 0)
         {
-        // Basic touch input simulation for movement (for testing without a dedicated action)
-        // In a real mobile game, you'd likely use a virtual joystick or specific touch gestures
-        // This is a placeholder to show how input *could* be handled.
-        moveInput = Vector2.zero;
-
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0); // Get the first touch
-
-            // Simple example: move towards the touch position (not ideal for beat 'em up,
-            // but demonstrates touch input detection)
-            Vector3 touchWorldPos = Camera.main.ScreenToWorldPoint(touch.position);
-            Vector2 direction = (touchWorldPos - transform.position).normalized;
-
-            // This is a very basic interpretation; a proper mobile beat 'em up
-            // would likely use a virtual joystick UI element to control movement direction.
-            // For now, let's simulate directional input with arrow keys/WASD if not on mobile
-            // or if using a different input scheme.
-
-            // Let's stick to a more traditional directional input for now,
-            // assuming it will be mapped to touch input via an Input Actions asset later.
-            // You would read the mapped touch input from your Input Action asset.
-
-            // Placeholder for reading input from an Action (assuming "Move" action provides a Vector2)
-            // if (moveAction != null)
-            // {
-            //     moveInput = moveAction.ReadValue<Vector2>();
-            // }
-        }
-        else
-        {
-             // Fallback for keyboard/gamepad input during testing
-             moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
- }
             ResetCombo(); // Reset combo if time window passed
 
         // Animation logic (placeholders)
@@ -117,13 +89,12 @@ public class PlayerController : MonoBehaviour
  private void UpdateAnimations()
  {
         if (animator == null) return;
-
-        // Simple logic: play walk animation if moving, idle otherwise
-        bool isMoving = moveInput.magnitude > 0.1f; // Use a small threshold for floating point inaccuracies
- animator.SetBool("IsWalking", isMoving); // You'll need an "IsWalking" boolean parameter in your Animator Controller
+        // Keep the basic animation logic for now
+        // bool isMoving = moveInput.magnitude > 0.1f;
+        // animator.SetBool("IsWalking", isMoving);
     }
 
-    private void FixedUpdate()
+     void FixedUpdate()
     {
  if (isDefeated)
         {
@@ -136,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (rb != null)
+       if (rb != null)
         {
             rb.velocity = moveInput.normalized * moveSpeed;
         }
@@ -145,7 +116,7 @@ public class PlayerController : MonoBehaviour
     // Input Action Callbacks (Connect these in the Unity Input System)
     public void OnMove(InputAction.CallbackContext context)
     {
- if (isDefeated) return;
+         if (isDefeated) return;
  moveInput = context.ReadValue<Vector2>();
     }
 
@@ -172,7 +143,7 @@ public class PlayerController : MonoBehaviour
     // Attack Logic
     public void Attack()
     {
- if (isAttacking || isDefeated) return; // Prevent attacking if already attacking or defeated
+         if (isAttacking || isDefeated) return; // Prevent attacking if already attacking or defeated
 
         isAttacking = true;
  lastAttackTime = Time.time; // Record the time this attack started
@@ -220,6 +191,19 @@ public class PlayerController : MonoBehaviour
         isAttacking = false;
     }
 
+     private void UpdateComboUI()
+    {
+        if (comboText != null)
+        {
+            if (comboCount > 0)
+            {
+                comboText.text = "COMBO x" + comboCount;
+            }
+            else
+            {
+                comboText.text = "";
+            }
+        }
     // Combo System Logic
     private int comboCount = 0; // Current number of hits in the combo
     private float lastAttackTime; // Time when the last attack animation started
@@ -233,21 +217,11 @@ public class PlayerController : MonoBehaviour
         }
         comboCount = 0;
         // You might want to hide the combo UI here if it's displayed
+        UpdateComboUI(); // Update UI when combo resets
     }
 
     // Animation Logic (Placeholders)
     private void UpdateAnimations()
-    {
-        if (animator == null || isAttacking || isDefeated) return; // Don't change walk/idle animation if attacking or defeated
-
-        // Simple logic: play walk animation if moving, idle otherwise
-        bool isMoving = moveInput.magnitude > 0.1f; // Use a small threshold for floating point inaccuracies
- // Assuming you have "IsWalking" boolean and "AttackX" trigger/states in your Animator Controller
-        // animator.SetBool("IsWalking", isMoving);
-    }
-
-    // Placeholder methods for playing specific animations
-    private void PlayAttackAnimation(int comboHitNumber)
     {
         if (animator != null)
         {
@@ -261,13 +235,14 @@ public class PlayerController : MonoBehaviour
     {
         if (isDefeated) return;
 
-        currentHealth -= damage;
+        currentHealth -= damage; // Apply damage
         Debug.Log(gameObject.name + " took " + damage + " damage. Current health: " + currentHealth);
 
         if (currentHealth <= 0)
         {
             Defeat();
         }
+        UpdateHealthUI(); // Update UI after taking damage
     }
 
     public void Heal(int amount)
@@ -277,8 +252,26 @@ public class PlayerController : MonoBehaviour
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Prevent healing above max health
         Debug.Log(gameObject.name + " healed for " + amount + ". Current health: " + currentHealth);
-        // You might want to update a health bar UI here
+        UpdateHealthUI(); // Update UI after healing
     }
+
+     // New method to update the health UI
+    private void UpdateHealthUI()
+    {
+        // Update the fill image
+        if (healthBarFillImage != null)
+        {
+            // The fill amount is a value between 0 (empty) and 1 (full)
+            healthBarFillImage.fillAmount = (float)currentHealth / maxHealth;
+        }
+
+        // Update the health text (optional)
+        if (healthText != null)
+        {
+            healthText.text = currentHealth + "/" + maxHealth;
+        }
+    }
+
 
     private void Defeat()
     {
@@ -294,13 +287,6 @@ public class PlayerController : MonoBehaviour
     {
  Debug.Log("Weapon changed (placeholder). New weapon prefab: " + (newWeaponPrefab != null ? newWeaponPrefab.name : "None"));
  // Implement logic here to swap weapon visuals, adjust attack damage/range, etc.
-    }
-
-    // Placeholder for score accumulation
-    public void AddScore(int amount)
-    {
- Debug.Log("Score added (placeholder): +" + amount);
- // You would add logic here to update a score variable and potentially a score UI
     }
 
     // Optional: Draw attack range in the editor for debugging

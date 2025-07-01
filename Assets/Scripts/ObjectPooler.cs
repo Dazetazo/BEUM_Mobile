@@ -1,6 +1,7 @@
 csharp
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class ObjectPooler : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class ObjectPooler : MonoBehaviour
     [SerializeField]
     private GameObject prefabToPool; // The prefab to pool
     [SerializeField]
-    private int poolSize = 10; // The initial size of the pool
+ private int initialPoolSize = 10; // The initial size of the pool
 
     private List<GameObject> pooledObjects;
 
@@ -20,7 +21,7 @@ public class ObjectPooler : MonoBehaviour
         pooledObjects = new List<GameObject>();
 
         // Instantiate the initial pool of objects
-        for (int i = 0; i < poolSize; i++)
+        for (int i = 0; i < initialPoolSize; i++)
         {
             GameObject obj = Instantiate(prefabToPool);
             obj.SetActive(false); // Deactivate them
@@ -39,18 +40,18 @@ public class ObjectPooler : MonoBehaviour
                 obj.transform.position = position;
                 obj.transform.rotation = rotation;
                 obj.SetActive(true);
-                // Potential: Call a method on the object to reset its state if needed
-                // obj.GetComponent<IPooledObject>()?.OnObjectSpawn();
                 return obj;
             }
         }
 
         // If no inactive object is found, optionally grow the pool (be cautious with performance)
-        // GameObject newObj = Instantiate(prefabToPool);
-        // newObj.SetActive(true);
-        // newObj.transform.position = position;
-        // newObj.transform.rotation = rotation;
-        // pooledObjects.Add(newObj);
+        Debug.LogWarning("Pool is empty. Expanding pool for: " + prefabToPool.name);
+ GameObject newObj = Instantiate(prefabToPool);
+ newObj.SetActive(true); // Activate the new object immediately
+ pooledObjects.Add(newObj); // Add it to the pool
+ newObj.transform.position = position;
+ newObj.transform.rotation = rotation;
+ return newObj;
         // Potential: newObj.GetComponent<IPooledObject>()?.OnObjectSpawn();
         // Debug.LogWarning("Object pool is depleted. Consider increasing the pool size.");
         // return newObj;
@@ -62,9 +63,7 @@ public class ObjectPooler : MonoBehaviour
 
     public void ReturnToPool(GameObject objectToReturn)
     {
-        // Deactivate the object and return it to the pool (logically)
         objectToReturn.SetActive(false);
-        // Potential: Reset the object's state before returning if needed
-        // objectToReturn.GetComponent<IPooledObject>()?.OnObjectReturn();
+        // You might want to reset its state here (e.g., health, velocity, animation)
     }
 }
